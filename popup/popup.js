@@ -188,15 +188,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 action: 'removeFromWhitelist',
                 site: currentSite
             }, (response) => {
-                if (response && !response.success) {
+                if (response && response.success) {
                     // Site added to whitelist
-                    console.log("Site added to whitelist:", response.site);
+                    console.log("Site removed from whitelist:", response.site);
                     updateWhitelistCount();
-                    showNotification("Site Whitelisted", `Added ${domain} to whitelist`);
+                    showNotification("Site Not Whitelisted", `Removed ${domain} to whitelist`);
                     
-                    // Add a visual pop animation when site is successfully added
-                    applyPopOutAnimation(addToWhitelistButton);
-                } else if (response && response.success) {
+                } else if (response && !response.success) {
                     console.log("Site is already in the whitelist.");
                     updateWhitelistCount(); // Update count even if the site exists
                     
@@ -229,7 +227,7 @@ document.addEventListener("DOMContentLoaded", () => {
             isExtensionOn = true;
             button.classList.add("on");
             statusText.textContent = "Extension is On!";
-            statusImage.src = "status_clear.png";
+            statusImage.src = "status_issue.png";
             
             // Start timer from 0
             startTime = Date.now();

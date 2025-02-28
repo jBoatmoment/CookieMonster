@@ -85,11 +85,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "removeFromWhitelist") {
     const newSites = message.sites ? message.sites : [message.site];
 
-    // Check if a site was already in the whitelist
     const sitesRemoved = newSites.filter(site => WHITELISTED_SITES.includes(site));
+    
     const sitesAlreadyInWhitelist = newSites.filter(site => !WHITELISTED_SITES.includes(site));
 
-    sitesRemoved.forEach(site => WHITELISTED_SITES.pop(site));
+    WHITELISTED_SITES = WHITELISTED_SITES.filter(site => !sitesRemoved.includes(site));
 
     // Save updated whitelist to chrome storage
     chrome.storage.local.set({ whitelist: WHITELISTED_SITES }, () => {
@@ -105,7 +105,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         // If sites were already in the whitelist, send a message that the site is already in the list
         sendResponse({
           success: false,
-          message: `${sitesNotInWhitelist.join(", ")} not in whitelist`
+          message: `${sitesAlreadyInWhitelist.join(", ")} not in whitelist`
         });
       }
     });
