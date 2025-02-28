@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Supercharge';
-    src: url('fonts/Supercharge-JRgPo.otf') format('opentype');
+    src: url('fonts/Supercharge-JRgPo.ttf') format('truetype');
 }
 
 body {
@@ -139,7 +139,9 @@ body.bg-height-scale::before {
 
 /* Timer */
 .timer-label {
-    font-family: 'Supercharge', sans-serif;
+    font-family: 'Segoe UI', Tahoma, sans-serif;;
+    font-weight: 400;
+    letter-spacing: 1.5px;
     font-size: 16px;
     margin: 5px 0;
     color: white;
@@ -151,9 +153,12 @@ body.bg-height-scale::before {
     letter-spacing: 3px;
     font-size: 48px;
     font-weight: bold;
+    background: linear-gradient(to right, #FFA500, #ff8e38);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
     margin: 0 0 10px 0;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 2px 2px 4px rgba(147, 100, 0, 0.5);
 }
 
 /* Status Section */
