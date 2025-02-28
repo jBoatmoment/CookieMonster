@@ -56,9 +56,16 @@ document.addEventListener("DOMContentLoaded", () => {
             seconds = elapsedTime % 60;
             minutes = Math.floor(elapsedTime / 60) % 60;
             hours = Math.floor(elapsedTime / 3600);
-
+    
             timer.textContent = formatTime(hours, minutes, seconds);
-
+    
+            // Check if we reached 2 seconds and send a message to the background script
+            if (elapsedTime === 2) {
+                chrome.runtime.sendMessage({
+                    action: "timerAtTwoSeconds"
+                });
+            }
+    
             // Store the current state in localStorage
             localStorage.setItem('timerState', JSON.stringify({
                 isOn: true,
@@ -67,6 +74,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }));
         }
     }
+    
+    
 
     function startTimer() {
         if (!isTimerRunning) {
@@ -275,4 +284,5 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log(`Notification: ${title} - ${message}`);
         }
     }
+    
 });

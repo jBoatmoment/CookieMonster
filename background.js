@@ -146,6 +146,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     sendResponse({ success: true });
     return true;
   }
+
+  // Handle the timer reaching 2 seconds
+  if (message.action === "timerAtTwoSeconds") {
+    chrome.notifications.create({
+      type: "basic",
+      iconUrl: "icons/icon_128.png",
+      title: "Timer Alert",
+      message: "The timer has reached 2 seconds!",
+    });
+    sendResponse({ success: true });
+    return true;
+  }
 });
 
 // Optional: Add an installation or update handler to initialize settings

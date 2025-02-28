@@ -131,12 +131,13 @@ body.bg-height-scale::before {
     font-size: 14px;
 }
 
-/* Timer */
+/* Apply custom font to timer label */
 .timer-label {
     font-size: 16px;
     margin: 5px 0;
     color: white;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    font-family: 'Supercharge', sans-serif;  /* Use the custom font */
 }
 
 .timer-display {
@@ -181,6 +182,7 @@ body.bg-height-scale::before {
     .timer-display {
         font-size: 40px;
         margin: 0 0 5px 0;
+        
     }
     
     #status-image {
