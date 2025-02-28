@@ -17,7 +17,7 @@
       }
     },
     "background": {
-      "service_worker": "background.js"
+      "service_worker": "popup/background.js"
     },
     "permissions": [
       "storage"
