@@ -2,147 +2,277 @@ document.addEventListener("DOMContentLoaded", () => {
     const button = document.getElementById("toggle-button");
     const statusText = document.getElementById("status-text");
     const statusImage = document.getElementById("status-image");
-    const clock = document.getElementById("clock");
     const timer = document.getElementById("timer");
+    const currentSiteDisplay = document.getElementById("current-site");
+    const whitelistCountDisplay = document.getElementById("whitelist-count");
+    const addToWhitelistButton = document.getElementById("add-to-whitelist");
 
     let timerInterval;
     let seconds = 0;
     let minutes = 0;
     let hours = 0;
     let isTimerRunning = false;
+    let startTime = null;
+    let isExtensionOn = false;
 
     // Load the state from localStorage
-    const savedState = JSON.parse(localStorage.getItem('timerState'));
+    const savedState = JSON.parse(localStorage.getItem('timerState') || '{"isOn": false}');
 
-    // Initialize variables with default values if savedState is null or malformed
-    let lastTime = savedState ? savedState.lastTime : Date.now(); // Default to current time if not found
-    let startTime = savedState && savedState.startTime && !isNaN(savedState.startTime) ? savedState.startTime : Date.now(); // Ensure valid number
+    // Initialize variables with default values
+    if (savedState && savedState.isOn && !isNaN(savedState.startTime)) {
+        startTime = savedState.startTime;
+        isExtensionOn = true;
+        button.classList.add("on");
+        statusText.textContent = "Extension is On!";
+        statusImage.src = "status_issue.png";
+        statusText.style.transform = "translateY(0px) scale(1)";
+        statusText.style.fontSize = "24px";
+        updateBackgroundSize(true);
+    } 
 
-    // Function to format the time in HH:MM:SS format
-    function formatTime() {
+    function applyJiggleAnimation(element) {
+        
+        element.classList.remove("jiggle");
+        
+        
+        void element.offsetWidth;
+        
+        
+        element.classList.add("jiggle");
+        
+        setTimeout(() => {
+            element.classList.remove("jiggle");
+        }, 350); 
+    }
+    
+    function formatTime(h, m, s) {
         const pad = num => num < 10 ? '0' + num : num;
-        return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        return `${pad(h)}:${pad(m)}:${pad(s)}`;
     }
 
-    // Update the timer every second
     function updateTimer() {
         if (startTime) {
-            // Calculate the elapsed time
-            const elapsedTime = Date.now() - startTime;
-            seconds = Math.floor(elapsedTime / 1000) % 60;
-            minutes = Math.floor(elapsedTime / (1000 * 60)) % 60;
-            hours = Math.floor(elapsedTime / (1000 * 60 * 60));
+            const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+            seconds = elapsedTime % 60;
+            minutes = Math.floor(elapsedTime / 60) % 60;
+            hours = Math.floor(elapsedTime / 3600);
 
-            timer.textContent = formatTime();
+            timer.textContent = formatTime(hours, minutes, seconds);
 
             // Store the current state in localStorage
             localStorage.setItem('timerState', JSON.stringify({
                 isOn: true,
-                startTime: startTime,  // Save the start time
-                lastTime: Date.now(),  // Save the last time the timer was updated
+                startTime: startTime,
+                lastTime: Date.now()
             }));
         }
     }
 
-    // Start stopwatch
     function startTimer() {
         if (!isTimerRunning) {
-            timerInterval = setInterval(updateTimer, 1000);  // Update every second
+            timerInterval = setInterval(updateTimer, 1000);
             isTimerRunning = true;
+            // Update immediately to avoid the 1-second delay
+            updateTimer();
         }
     }
 
-    // Stop stopwatch and reset to 0
     function stopTimer() {
         clearInterval(timerInterval);
         isTimerRunning = false;
         seconds = 0;
         minutes = 0;
         hours = 0;
-        timer.textContent = formatTime();  // Reset the timer display to 00:00:00
+        timer.textContent = formatTime(hours, minutes, seconds);
         
         // Reset state in localStorage when turned off
         localStorage.setItem('timerState', JSON.stringify({
             isOn: false,
-            startTime: null,  // Reset the startTime to null (no active timer)
-            lastTime: Date.now(),  // Store the current time as lastTime
+            startTime: null,
+            lastTime: Date.now()
         }));
     }
 
     // Update the background height by toggling the bg-height-scale class
     function updateBackgroundSize(isOn) {
         if (isOn) {
-            document.body.classList.add('bg-height-scale');  // Scale only the height
+            document.body.classList.add('bg-height-scale');
         } else {
-            document.body.classList.remove('bg-height-scale');  // Reset to default
+            document.body.classList.remove('bg-height-scale');
         }
     }
 
-    // Handle button click to toggle the state
-    button.addEventListener("click", () => {
-        button.classList.toggle("on");
+    // Get main domain from the current URL
+    function getMainDomain(url) {
+        try {
+            const urlObj = new URL(url);
+            const domain = urlObj.hostname.replace(/^www\./, '');
+            return domain;
+        } catch (e) {
+            console.error("Invalid URL:", url);
+            return "Not Available";
+        }
+    }
 
-        if (button.classList.contains("on")) {
-            statusText.textContent = "Extension is on!";
-            statusImage.src = "status_issue.png";  // Change image to 'issue_found'
+    // Update current site information
+    function updateCurrentSite() {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs && tabs.length > 0 && tabs[0].url) {
+                const domain = getMainDomain(tabs[0].url);
+                currentSiteDisplay.textContent = domain;
+            } else {
+                currentSiteDisplay.textContent = "Not Available";
+            }
+        });
+    }
+
+    // Add the current site to the whitelist
+    function addToWhitelist() {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (!tabs || !tabs.length) {
+                console.error("No active tab found.");
+                return;
+            }
+    
+            const currentSite = tabs[0].url;
+            if (!currentSite) {
+                console.error("No URL in current tab.");
+                return;
+            }
+    
+            const domain = getMainDomain(currentSite);
+            currentSiteDisplay.textContent = domain;
+    
+            // Send message to the background script to add the site to whitelist
+            chrome.runtime.sendMessage({
+                action: 'addToWhitelist',
+                site: currentSite
+            }, (response) => {
+                if (response && response.success) {
+                    // Site added to whitelist
+                    console.log("Site added to whitelist:", response.site);
+                    updateWhitelistCount();
+                    showNotification("Site Whitelisted", `Added ${domain} to whitelist`);
+                } else if (response && !response.success) {
+                    console.log("Site is already in the whitelist.");
+                    updateWhitelistCount(); // Update count even if the site exists
+                    applyJiggleAnimation(whitelistCountDisplay);
+                    showNotification("Site Already in Whitelist", `${domain} is already in the whitelist`);
+                }
+            });
+        });
+
+        updateWhitelistCount();
+    }
+
+    // Update the whitelist count
+    function updateWhitelistCount() {
+        chrome.runtime.sendMessage({ action: 'getWhitelistCount' }, (response) => {
+            if (response && response.count !== undefined) {
+                whitelistCountDisplay.textContent = response.count;
+            }
+        });
+    }
+
+    // Handle power button click to toggle the state
+    button.addEventListener("click", () => {
+        if (!isExtensionOn) {
+            isExtensionOn = true;
+            button.classList.add("on");
+            statusText.textContent = "Extension is On!";
+            statusImage.src = "status_issue.png";
             
             // Start timer from 0
-            startTime = Date.now();  // Reset startTime to current time
+            startTime = Date.now();
             startTimer();
 
-            // Animate title up and scale down
-            statusText.style.transform = "translateY(20px) scale(0.8)";  // Move up 20px and scale down
-            statusText.style.fontSize = "18px";  // Smaller size
-
-            // Move the button up by 20px
-            button.style.transform = "translateY(-20px)";  // Move button up
-
-            // Move the status image up by 10px
-            statusImage.style.transform = "translateY(-25px)";  // Move image up
-
-            // Show the clock and start counting
-            clock.style.display = "block";  // Show clock
-
-            // Update background height to 110%
+            // Update visual elements
             updateBackgroundSize(true);
+            statusText.style.transform = "translateY(0px) scale(1)";
+            statusText.style.fontSize = "24px";
+            
+            // Send message to background script to activate extension
+            chrome.runtime.sendMessage({ action: 'activateExtension' });
         } else {
-            statusText.textContent = "Extension is off";
-            statusImage.src = "status_clear.png";  // Change image to 'status_clear'
+            isExtensionOn = false;
+            button.classList.remove("on");
+            statusText.textContent = "Extension is Off";
+            statusImage.src = "status_clear.png";
             
             // Stop and reset timer
             stopTimer();
-
+            
             // Reset title position and size
-            statusText.style.transform = "translateY(0) scale(1)";  // Reset movement and size
-            statusText.style.fontSize = "24px";  // Original size
-
-            // Reset the button position
-            button.style.transform = "translateY(0)";  // Reset button position
-
-            // Reset the status image position
-            statusImage.style.transform = "translateY(0)";  // Reset image position
-
-            // Hide the clock
-            clock.style.display = "none";  // Hide clock
-
-            // Reset background height to 100%
+            statusText.style.transform = "translateY(10px) scale(0.8)";
+            statusText.style.fontSize = "24px";
+            
+            // Reset the visual state
             updateBackgroundSize(false);
+            
+            // Send message to background script to deactivate extension
+            chrome.runtime.sendMessage({ action: 'deactivateExtension' });
         }
     });
 
-    // On load, check if the timer should be running
-    if (savedState && savedState.isOn && !isNaN(startTime)) {
-        // Timer should already be running in the background; continue updating
-        startTimer();
-        statusText.textContent = "Extension is on!";
-        statusImage.src = "status_issue.png";
-        clock.style.display = "block";
-        button.classList.add("on");
-        updateBackgroundSize(true);
+    addToWhitelistButton.addEventListener("click", addToWhitelist);
 
-        // Immediately show the current time without waiting for 1 second
-        updateTimer(); // This ensures the time is immediately displayed when opened
+    if (savedState && savedState.isOn && !isNaN(savedState.startTime)) {
+        startTimer();
     } else {
-        timer.textContent = formatTime();  // Display initial 00:00:00 if no saved state
+        timer.textContent = formatTime(0, 0, 0);
+    }
+
+    updateCurrentSite();
+    updateWhitelistCount();
+
+    // Handle incoming messages from background.js or content.js
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        if (message.action === "updateWhitelist" || message.action === "addToWhitelist") {
+            updateWhitelistCount();
+            showNotification("Whitelist Updated", `Site: ${message.site || "Unknown"}`);
+        }
+
+        if (message.action === "checkCookiesSecurity") {
+            showNotification("Insecure Cookies Detected", message.message);
+            statusImage.src = "status_issue.png";
+        }
+
+        if (message.action === "cookieAccessAttempt") {
+            showNotification("Cookie Access Attempt", message.message);
+        }
+
+        if (message.action === "scriptBlockAttempt") {
+            showNotification("Unauthorized Script Blocked", `Blocked: ${message.scriptSrc}`);
+        }
+
+        if (message.action === "secureCookies") {
+            showNotification("Secure Cookies", `Securing cookies for: ${message.site}`);
+        }
+
+        if (message.action === "requestBlocked") {
+            showNotification("Request Blocked", `Blocked request to: ${message.requestUrl}`);
+        }
+
+        if (message.action === "inlineScriptBlocked") {
+            showNotification("Inline Script Blocked", `Blocked inline script on: ${message.site}`);
+        }
+        
+        // Respond with success
+        sendResponse({ success: true });
+        return true; // Keep the message channel open for async response
+    });
+
+    // Show a notification with the given title and message
+    function showNotification(title, message) {
+        if (chrome.notifications) {
+            chrome.notifications.create({
+                type: "basic",
+                iconUrl: "icons/icon_128.png",  // Path to your icon
+                title: title,
+                message: message,
+            });
+        } else {
+            console.log(`Notification: ${title} - ${message}`);
+        }
     }
 });

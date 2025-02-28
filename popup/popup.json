@@ -1,15 +1,29 @@
 {
-    "name": "CookieMonster",
+    "name": "Cookie Monster",
     "version": "1.0",
+    "description": "Protects from cookie hijacking and unauthorized access.",
     "manifest_version": 3,
     "action": {
-      "default_popup": "popup/popup.html"
+      "default_popup": "popup/popup.html",
+      "default_icon": {
+        "16": "icons/icon_16.png",
+        "48": "icons/icon_48.png",
+        "128": "icons/icon_128.png"
+      }
     },
     "web_accessible_resources": [
       {
         "resources": ["popup/popup_BG.png"],
         "matches": ["<all_urls>"]
       }
+    ],
+    "permissions": [
+      "cookies",
+      "storage",
+      "contextMenus",
+      "declarativeNetRequest",
+      "notifications",
+      "activeTab"
     ]
   }
   

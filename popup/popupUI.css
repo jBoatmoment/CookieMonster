@@ -6,15 +6,17 @@
 body {
     position: relative;
     width: 400px;
-    height: 265px;
+    height: 300px; /* Reduced height to prevent excess space */
     margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
     background-color: orange;
-    justify-content: center;
+    justify-content: flex-start; /* Align content to the top */
     align-items: center;
     font-family: Arial, sans-serif;
     text-align: center;
+    overflow: hidden;
 }
 
 body::before {
@@ -24,78 +26,164 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
+    height: 118%;
     background: url('popup_BG_3.png') no-repeat center center;
-    background-size: 1;  /* Default size */
+    background-size: cover; /* Use cover instead of explicit sizing */
     opacity: 1.0;
     z-index: -1;
-    transition: background-size 0.5s ease-in-out;  /* Smooth transition for background size */
-}
-
-body.bg-scale::before {
-    background-size: 1.1;  /* Scale the background width and height */
+    transition: all 0.5s ease-in-out;
 }
 
 /* Add a specific class for scaling only the height */
 body.bg-height-scale::before {
-    background-size: 100% 110%;  /* Scale only the height to 110% */
+    background-size: cover;  /* Ensures the image fills the space */
+    transform: scaleX(1.1);
 }
+
 #container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    width: 100%;
+    width: 90%;
+    max-width: 380px;
+    padding: 20px 0 0 0;
 }
 
-#status-text {
-    margin-top: 20px;  /* This will be the initial position of the title */
-    color: white;
-    font-size: 20px;  /* Smaller font size for fitting in the fixed size */
-    font-family: 'Supercharge', sans-serif;
-    text-align: center;
-    margin-bottom: 10px;
-    transition: transform 0.8s ease, font-size 0.8s ease;  /* Title animation */
-}
-
-#toggle-button {
-    width: 52px;
-    height: 52px;
+/* Power Button */
+.power-button {
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     border: none;
-    background-color: grey;
+    background-color: #444;
     cursor: pointer;
-    transition: background-color 0.6s ease-in-out, transform 0.8s ease; /* Add transform transition */
     font-size: 30px;
     font-weight: bold;
     color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    line-height: 60px;
-}
-#toggle-button.on {
-    background-color: orange;
+    margin-bottom: 10px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.power-button:hover {
+    transform: scale(1.05);
+}
+
+.power-button.on {
+    background-color: #FFA500;
+    box-shadow: 0 0 15px rgba(255, 165, 0, 0.6);
+}
+
+/* Status Text */
+#status-text {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 5px 0 15px 0;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease-in-out;
+}
+
+/* Whitelist Section */
+.whitelist-section {
+    text-align: center;
+    background-color: #003355;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#add-to-whitelist {
+    background-color: #FFA500;
+    border: none;
+    color: black;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+    margin-bottom: 8px;
+}
+
+#add-to-whitelist:hover {
+    background-color: #FF8800;
+    transform: scale(1.05);
+}
+
+@keyframes jiggle {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(5px); }
+    50% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+    100% { transform: translateX(0); }
+}
+
+.jiggle {
+    animation: jiggle 0.3s ease-in-out;
+    display: inline-block;
+}
+
+.whitelist-section p {
+    margin: 6px 0;
+    font-size: 14px;
+}
+
+/* Timer */
+.timer-label {
+    font-size: 16px;
+    margin: 5px 0;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.timer-display {
+    font-size: 48px;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Status Section */
 #status-view {
-    margin-top: 10px;  /* Reduced margin to save space */
+    margin-top: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#status-message {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 8px;
 }
 
 #status-image {
-    width: 180px;  /* Slightly reduced size to fit within fixed popup */
-    height: 60px;
-    transition: transform 0.8s ease; /* Add transform transition */
+    width: 120px;
+    height: auto;
+    transition: transform 0.3s ease;
 }
 
-/* Clock Styles */
-#clock {
-    font-family: 'Supercharge', sans-serif;
-    color: white;
-    font-size: 26px;  /* Smaller clock size to fit inside fixed popup */
-    margin-top: 0px;
-    display: none;  /* Hide clock by default */
+#status-image:hover {
+    transform: scale(1.05);
 }
 
-#timer {
-    font-size: 52px;  /* Smaller font size for the timer */
+/* Media query to handle small heights */
+@media (max-height: 500px) {
+    body {
+        height: 350px;
+    }
+    
+    .timer-display {
+        font-size: 40px;
+        margin: 0 0 5px 0;
+    }
+    
+    #status-image {
+        width: 200px;
+    }
 }
