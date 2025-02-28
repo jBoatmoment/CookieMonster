@@ -83,8 +83,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
   
   if (message.action === "checkCookiesSecurity") {
+    console.log("Checking cookies for:", message.site);
     chrome.cookies.getAll({ domain: new URL(message.site).hostname }, (cookies) => {
+      console.log("Found cookies:", cookies.length);
       let insecureCookies = cookies.filter(cookie => !cookie.secure || !cookie.httpOnly);
+      console.log("Insecure cookies:", insecureCookies.length, insecureCookies);
       if (insecureCookies.length > 0) {
         chrome.notifications.create({
           type: "basic",

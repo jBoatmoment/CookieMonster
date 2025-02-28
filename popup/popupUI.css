@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Supercharge';
-    src: url('Supercharge-JRgPo.ttf') format('truetype');
+    src: url('fonts/Supercharge-JRgPo.otf') format('opentype');
 }
 
 body {
@@ -26,7 +26,7 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    height: 118%;
+    height: 120%;
     background: url('popup_BG_3.png') no-repeat center center;
     background-size: cover; /* Use cover instead of explicit sizing */
     opacity: 1.0;
@@ -121,9 +121,9 @@ body.bg-height-scale::before {
 
 @keyframes jiggle {
     0% { transform: translateX(0); }
-    25% { transform: translateX(5px); }
-    50% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
+    25% { transform: translateX(2px); }
+    50% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
     100% { transform: translateX(0); }
 }
 
@@ -139,6 +139,7 @@ body.bg-height-scale::before {
 
 /* Timer */
 .timer-label {
+    font-family: 'Supercharge', sans-serif;
     font-size: 16px;
     margin: 5px 0;
     color: white;
@@ -146,6 +147,8 @@ body.bg-height-scale::before {
 }
 
 .timer-display {
+    font-family: 'Impact', Haettenschweiler, sans-serif;
+    letter-spacing: 3px;
     font-size: 48px;
     font-weight: bold;
     margin: 0 0 10px 0;
@@ -184,10 +187,10 @@ body.bg-height-scale::before {
         height: 350px;
     }
     
-    .timer-display {
+    /* .timer-display {
         font-size: 40px;
         margin: 0 0 5px 0;
-    }
+    } */
     
     #status-image {
         width: 200px;
