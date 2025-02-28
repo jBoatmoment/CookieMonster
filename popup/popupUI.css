@@ -1,0 +1,101 @@
+@font-face {
+    font-family: 'Supercharge';
+    src: url('Supercharge-JRgPo.ttf') format('truetype');
+}
+
+body {
+    position: relative;
+    width: 400px;
+    height: 265px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: orange;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('popup_BG_3.png') no-repeat center center;
+    background-size: 1;  /* Default size */
+    opacity: 1.0;
+    z-index: -1;
+    transition: background-size 0.5s ease-in-out;  /* Smooth transition for background size */
+}
+
+body.bg-scale::before {
+    background-size: 1.1;  /* Scale the background width and height */
+}
+
+/* Add a specific class for scaling only the height */
+body.bg-height-scale::before {
+    background-size: 100% 110%;  /* Scale only the height to 110% */
+}
+#container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+#status-text {
+    margin-top: 20px;  /* This will be the initial position of the title */
+    color: white;
+    font-size: 20px;  /* Smaller font size for fitting in the fixed size */
+    font-family: 'Supercharge', sans-serif;
+    text-align: center;
+    margin-bottom: 10px;
+    transition: transform 0.8s ease, font-size 0.8s ease;  /* Title animation */
+}
+
+#toggle-button {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: none;
+    background-color: grey;
+    cursor: pointer;
+    transition: background-color 0.6s ease-in-out, transform 0.8s ease; /* Add transform transition */
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 60px;
+}
+#toggle-button.on {
+    background-color: orange;
+}
+
+#status-view {
+    margin-top: 10px;  /* Reduced margin to save space */
+}
+
+#status-image {
+    width: 180px;  /* Slightly reduced size to fit within fixed popup */
+    height: 60px;
+    transition: transform 0.8s ease; /* Add transform transition */
+}
+
+/* Clock Styles */
+#clock {
+    font-family: 'Supercharge', sans-serif;
+    color: white;
+    font-size: 26px;  /* Smaller clock size to fit inside fixed popup */
+    margin-top: 0px;
+    display: none;  /* Hide clock by default */
+}
+
+#timer {
+    font-size: 52px;  /* Smaller font size for the timer */
+}

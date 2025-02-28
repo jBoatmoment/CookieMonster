@@ -1,0 +1,15 @@
+{
+    "name": "CookieMonster",
+    "version": "1.0",
+    "manifest_version": 3,
+    "action": {
+      "default_popup": "popup/popup.html"
+    },
+    "web_accessible_resources": [
+      {
+        "resources": ["popup/popup_BG.png"],
+        "matches": ["<all_urls>"]
+      }
+    ]
+  }
+  
