@@ -81,6 +81,37 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     return true; // Keep the message channel open for async response
   }
+
+  if (message.action === "removeFromWhitelist") {
+    const newSites = message.sites ? message.sites : [message.site];
+
+    // Check if a site was already in the whitelist
+    const sitesRemoved = newSites.filter(site => WHITELISTED_SITES.includes(site));
+    const sitesAlreadyInWhitelist = newSites.filter(site => !WHITELISTED_SITES.includes(site));
+
+    sitesRemoved.forEach(site => WHITELISTED_SITES.pop(site));
+
+    // Save updated whitelist to chrome storage
+    chrome.storage.local.set({ whitelist: WHITELISTED_SITES }, () => {
+      updateBlockingRules(); // Update blocking rules when whitelist changes
+
+      // If new sites were added, send success
+      if (sitesRemoved.length > 0) {
+        sendResponse({
+          success: true,
+          updatedWhitelist: WHITELISTED_SITES
+        });
+      } else {
+        // If sites were already in the whitelist, send a message that the site is already in the list
+        sendResponse({
+          success: false,
+          message: `${sitesNotInWhitelist.join(", ")} not in whitelist`
+        });
+      }
+    });
+
+    return true; // Keep the message channel open for async response
+  }
   
   if (message.action === "checkCookiesSecurity") {
     console.log("Checking cookies for:", message.site);

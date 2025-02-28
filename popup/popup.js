@@ -165,6 +165,55 @@ document.addEventListener("DOMContentLoaded", () => {
         updateWhitelistCount();
     }
 
+    const removeFromWhitelistButton = document.getElementById("remove-from-whitelist");
+
+    function removeFromWhitelist() {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (!tabs || !tabs.length) {
+                console.error("No active tab found.");
+                return;
+            }
+    
+            const currentSite = tabs[0].url;
+            if (!currentSite) {
+                console.error("No URL in current tab.");
+                return;
+            }
+    
+            const domain = getMainDomain(currentSite);
+            currentSiteDisplay.textContent = domain;
+    
+            // Send message to the background script to add the site to whitelist
+            chrome.runtime.sendMessage({
+                action: 'removeFromWhitelist',
+                site: currentSite
+            }, (response) => {
+                if (response && !response.success) {
+                    // Site added to whitelist
+                    console.log("Site added to whitelist:", response.site);
+                    updateWhitelistCount();
+                    showNotification("Site Whitelisted", `Added ${domain} to whitelist`);
+                    
+                    // Add a visual pop animation when site is successfully added
+                    applyPopOutAnimation(addToWhitelistButton);
+                } else if (response && response.success) {
+                    console.log("Site is already in the whitelist.");
+                    updateWhitelistCount(); // Update count even if the site exists
+                    
+                    // Apply jiggle animation to the button if site is already in whitelist
+                    applyJiggleAnimation(whitelistCountDisplay);
+                    
+                    showNotification("Site Already in Whitelist", `${domain} is already in the whitelist`);
+                }
+            });
+        });
+
+        updateWhitelistCount();
+    }
+
+    // Add the event listener for the remove button
+    removeFromWhitelistButton.addEventListener("click", removeFromWhitelist);
+
     // Update the whitelist count
     function updateWhitelistCount() {
         chrome.runtime.sendMessage({ action: 'getWhitelistCount' }, (response) => {
