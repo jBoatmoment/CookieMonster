@@ -14,7 +14,7 @@ function updateBlockingRules() {
   const rules = [];
   
   // Rule to block cookie headers for non-whitelisted sites
-  // Note: In a real implementation, you'd need more sophisticated rules
+  // Note: In a real implementation, we would add more sophisticated rules
   // as declarativeNetRequest has limitations on dynamic rule generation
   chrome.declarativeNetRequest.updateDynamicRules({
     removeRuleIds: [1], // Remove existing rule if any
@@ -158,38 +158,30 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
   
   if (message.action === "secureCookies") {
-    // This could be enhanced to force-secure cookies when possible
     console.log(`Securing cookies for: ${message.site}`);
-    // Add additional security measures here
     sendResponse({ success: true });
     return true;
   }
   
   if (message.action === "requestBlocked") {
-    // Log blocked request attempts
     console.log(`Blocked request to: ${message.requestUrl}`);
-    // You might want to add a notification here as well for important blocks
     sendResponse({ success: true });
     return true;
   }
   
   if (message.action === "inlineScriptBlocked") {
     console.log(`Blocked inline script on: ${message.site}`);
-    // For frequent events like this, you might want to batch notifications
-    // rather than showing one for each blocked inline script
     sendResponse({ success: true });
     return true;
   }
 });
 
-// Optional: Add an installation or update handler to initialize settings
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === "install") {
-    // Initialize default settings on first install
     chrome.storage.local.set({
       whitelist: DEFAULT_WHITELIST,
-      notificationLevel: "high", // Could be used to control notification frequency
-      active: true // Extension active state
+      notificationLevel: "high", 
+      active: true 
     });
     
     // Show welcome message

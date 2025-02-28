@@ -72,7 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!isTimerRunning) {
             timerInterval = setInterval(updateTimer, 1000);
             isTimerRunning = true;
-            // Update immediately to avoid the 1-second delay
             updateTimer();
         }
     }
@@ -143,7 +142,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const domain = getMainDomain(currentSite);
             currentSiteDisplay.textContent = domain;
     
-            // Send message to the background script to add the site to whitelist
             chrome.runtime.sendMessage({
                 action: 'addToWhitelist',
                 site: currentSite
@@ -155,7 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     showNotification("Site Whitelisted", `Added ${domain} to whitelist`);
                 } else if (response && !response.success) {
                     console.log("Site is already in the whitelist.");
-                    updateWhitelistCount(); // Update count even if the site exists
+                    updateWhitelistCount();
                     applyJiggleAnimation(whitelistCountDisplay);
                     showNotification("Site Already in Whitelist", `${domain} is already in the whitelist`);
                 }
@@ -229,16 +227,13 @@ document.addEventListener("DOMContentLoaded", () => {
             statusText.textContent = "Extension is On!";
             statusImage.src = "status_issue.png";
             
-            // Start timer from 0
             startTime = Date.now();
             startTimer();
 
-            // Update visual elements
             updateBackgroundSize(true);
             statusText.style.transform = "translateY(0px) scale(1)";
             statusText.style.fontSize = "24px";
             
-            // Send message to background script to activate extension
             chrome.runtime.sendMessage({ action: 'activateExtension' });
         } else {
             isExtensionOn = false;
@@ -246,17 +241,13 @@ document.addEventListener("DOMContentLoaded", () => {
             statusText.textContent = "Extension is Off";
             statusImage.src = "status_clear.png";
             
-            // Stop and reset timer
             stopTimer();
             
-            // Reset title position and size
             statusText.style.transform = "translateY(10px) scale(0.8)";
             statusText.style.fontSize = "24px";
             
-            // Reset the visual state
             updateBackgroundSize(false);
             
-            // Send message to background script to deactivate extension
             chrome.runtime.sendMessage({ action: 'deactivateExtension' });
         }
     });
@@ -272,7 +263,6 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCurrentSite();
     updateWhitelistCount();
 
-    // Handle incoming messages from background.js or content.js
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         if (message.action === "updateWhitelist" || message.action === "addToWhitelist") {
             updateWhitelistCount();
@@ -304,7 +294,6 @@ document.addEventListener("DOMContentLoaded", () => {
             showNotification("Inline Script Blocked", `Blocked inline script on: ${message.site}`);
         }
         
-        // Respond with success
         sendResponse({ success: true });
         return true; // Keep the message channel open for async response
     });
@@ -314,7 +303,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (chrome.notifications) {
             chrome.notifications.create({
                 type: "basic",
-                iconUrl: "icons/icon_128.png",  // Path to your icon
+                iconUrl: "icons/icon_128.png",
                 title: title,
                 message: message,
             });
