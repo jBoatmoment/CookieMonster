@@ -63,6 +63,12 @@ body.bg-height-scale::before {
     margin-bottom: 10px;
     transition: all 0.3s ease-in-out;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    
+    /* Center the text inside the button */
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    line-height: 60px; /* Match line height to button height */
 }
 
 .power-button:hover {
