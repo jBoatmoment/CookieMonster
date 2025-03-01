@@ -225,7 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
             isExtensionOn = true;
             button.classList.add("on");
             statusText.textContent = "Extension is On!";
-            statusImage.src = "status_issue.png";
+            statusImage.src = "status_clear.png";
             
             startTime = Date.now();
             startTimer();
