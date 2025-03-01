@@ -1,0 +1,216 @@
+@font-face {
+    font-family: 'Supercharge';
+    src: url('fonts/Supercharge-JRgPo.ttf') format('truetype');
+}
+
+body {
+    position: relative;
+    width: 400px;
+    height: 300px; /* Reduced height to prevent excess space */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: orange;
+    justify-content: flex-start; /* Align content to the top */
+    align-items: center;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    overflow: hidden;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 120%;
+    background: url('popup_BG_3.png') no-repeat center center;
+    background-size: cover; /* Use cover instead of explicit sizing */
+    opacity: 1.0;
+    z-index: -1;
+    transition: all 0.5s ease-in-out;
+}
+
+/* Add a specific class for scaling only the height */
+body.bg-height-scale::before {
+    background-size: cover;  /* Ensures the image fills the space */
+    transform: scaleX(1.1);
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    max-width: 380px;
+    padding: 20px 0 0 0;
+}
+
+/* Power Button */
+.power-button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background-color: #444;
+    cursor: pointer;
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 10px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    
+    /* Center the text inside the button */
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    line-height: 60px; /* Match line height to button height */
+}
+
+.power-button:hover {
+    transform: scale(1.05);
+}
+
+.power-button.on {
+    background-color: #FFA500;
+    box-shadow: 0 0 15px rgba(255, 165, 0, 0.6);
+}
+
+/* Status Text */
+#status-text {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 5px 0 15px 0;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease-in-out;
+}
+
+/* Whitelist Section */
+.whitelist-section {
+    text-align: center;
+    background-color: #003355;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#add-to-whitelist {
+    background-color: #FFA500;
+    border: none;
+    color: black;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+    margin-bottom: 8px;
+    margin-right: 10px;
+}
+
+#add-to-whitelist:hover {
+    background-color: #FF8800;
+    transform: scale(1.05);
+}
+
+#remove-from-whitelist {
+    background-color: #FFA500;
+    border: none;
+    color: black;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+    margin-bottom: 8px;
+}
+
+#remove-from-whitelist:hover {
+    background-color: #FF8800;
+    transform: scale(1.05);
+}
+
+@keyframes jiggle {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(2px); }
+    50% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+    100% { transform: translateX(0); }
+}
+
+.jiggle {
+    animation: jiggle 0.3s ease-in-out;
+    display: inline-block;
+}
+
+.whitelist-section p {
+    margin: 6px 0;
+    font-size: 14px;
+}
+
+/* Timer */
+.timer-label {
+    font-family: 'Segoe UI', Tahoma, sans-serif;;
+    font-weight: 400;
+    letter-spacing: 1.5px;
+    font-size: 16px;
+    margin: 5px 0;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.timer-display {
+    font-family: 'Impact', Haettenschweiler, sans-serif;
+    letter-spacing: 3px;
+    font-size: 48px;
+    font-weight: bold;
+    background: linear-gradient(to right, #FFA500, #ff8e38);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin: 0 0 10px 0;
+    text-shadow: 2px 2px 4px rgba(198, 136, 2, 0.5);
+}
+
+/* Status Section */
+#status-view {
+    margin-top: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#status-message {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 8px;
+}
+
+#status-image {
+    width: 120px;
+    height: auto;
+    transition: transform 0.3s ease;
+}
+
+#status-image:hover {
+    transform: scale(1.05);
+}
+
+/* Media query to handle small heights */
+@media (max-height: 500px) {
+    body {
+        height: 350px;
+    }
+    
+    #status-image {
+        width: 200px;
+    }
+}

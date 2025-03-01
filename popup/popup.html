@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Monster</title>
+    <link rel="stylesheet" href="popupUI.css">
+</head>
+<body>
+    <div id="container">
+        <button id="toggle-button" class="power-button">⏻</button>
+
+        <!-- Title Text -->
+        <p id="status-text">Extension is Off</p>
+
+        <!-- Whitelist Info -->
+        <div class="whitelist-section">
+            <button id="add-to-whitelist">Add to Whitelist</button>
+            <button id="remove-from-whitelist">Remove from Whitelist</button>
+            <p>Whitelisted Sites: <span id="whitelist-count">0</span></p>
+            <p>Current Site: <span id="current-site">Not Available</span></p>
+        </div>
+
+        <!-- Timer -->
+        <p class="timer-label">Time Running:</p>
+        <p id="clock" class="timer-display">00 : 00 : 00</p>
+
+        <!-- Status Section -->
+        <div id="status-view">
+            <!--<p id="status-message"></p>-->
+            <img id="status-image" src="status_clear.png" alt="Status Image">
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

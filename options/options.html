@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Hijacking Prevention - Settings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .settings-section {
+            margin-bottom: 15px;
+        }
+        .settings-label {
+            font-weight: bold;
+        }
+        .settings-input {
+            margin-top: 5px;
+            padding: 8px;
+            width: 100%;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cookie Hijacking Prevention Settings</h1>
+    
+    <div class="settings-section">
+        <label class="settings-label" for="blockThirdPartyCookies">Block Third-Party Cookies:</label>
+        <input type="checkbox" id="blockThirdPartyCookies" class="settings-input">
+    </div>
+
+    <div class="settings-section">
+        <label class="settings-label" for="disableSessionHijacking">Disable Session Hijacking Protection:</label>
+        <input type="checkbox" id="disableSessionHijacking" class="settings-input">
+    </div>
+
+    <button id="saveButton">Save Settings</button>
+
+    <script src="options.js"></script>
+</body>
+</html>
